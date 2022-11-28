@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings &mdash; 3DPixels 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> 3DPixels
+            <img src="_static/3dpixels_RTD_logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-anatomy-of-the-scene">The Anatomy of the Scene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewport-optimization">Viewport Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-settings">Quick Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-settings">Grid Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#instance-objects">Instance Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#base-scale">Base Scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#base-rotation">Base Rotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#base-shading">Base Shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-location">Extra Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-scale">Extra Scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-rotation">Extra Rotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-shading">Extra Shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-glass">Extra Glass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-plane">Extra Plane</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#boolean-settings">Boolean Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#frame-settings">Frame Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#floor-settings">Floor Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">3DPixels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Settings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/settings.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this heading"></a></h1>
+<img alt="panel settings" src="_images/panel_settings.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some settings might not work with each other</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Type in the settings textboxes if the scene gets heavy</p>
+</div>
+<section id="the-anatomy-of-the-scene">
+<h2>The Anatomy of the Scene<a class="headerlink" href="#the-anatomy-of-the-scene" title="Permalink to this heading"></a></h2>
+<img alt="anatomy of the scene1" src="_images/anatomy1.png" />
+<img alt="anatomy of the scene2" src="_images/anatomy2.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The extra plane is between the “frame” and “extra glass”</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The extra plane can be seen if using a boolean object or sparse grid</p>
+</div>
+</section>
+<section id="viewport-optimization">
+<h2>Viewport Optimization<a class="headerlink" href="#viewport-optimization" title="Permalink to this heading"></a></h2>
+<p>Optimize things if the scene gets heavy.</p>
+<img alt="viewport optimization settings" src="_images/viewport_optimization.png" />
+</section>
+<section id="quick-settings">
+<h2>Quick Settings<a class="headerlink" href="#quick-settings" title="Permalink to this heading"></a></h2>
+<img alt="quick settings" src="_images/quick_settings.png" />
+</section>
+<section id="grid-settings">
+<h2>Grid Settings<a class="headerlink" href="#grid-settings" title="Permalink to this heading"></a></h2>
+<p>Modify the grid on which the objects are placed.</p>
+<img alt="grid settings" src="_images/grid_settings.png" />
+</section>
+<section id="instance-objects">
+<h2>Instance Objects<a class="headerlink" href="#instance-objects" title="Permalink to this heading"></a></h2>
+<p>Change the objects to use as base and extra instances</p>
+<img alt="instance objects settings" src="_images/instance_objects.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Extra objects are located on top of the base objects</p>
+</div>
+</section>
+<section id="base-scale">
+<h2>Base Scale<a class="headerlink" href="#base-scale" title="Permalink to this heading"></a></h2>
+<p>Change the scale of base instances</p>
+<img alt="base scale settings" src="_images/base_scale.png" />
+</section>
+<section id="base-rotation">
+<h2>Base Rotation<a class="headerlink" href="#base-rotation" title="Permalink to this heading"></a></h2>
+<p>Change the rotation of base instances</p>
+<img alt="base rotation settings" src="_images/base_rotation.png" />
+</section>
+<section id="base-shading">
+<h2>Base Shading<a class="headerlink" href="#base-shading" title="Permalink to this heading"></a></h2>
+<p>Shading settings for base instances</p>
+<img alt="base shading settings" src="_images/base_shading.png" />
+</section>
+<section id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Permalink to this heading"></a></h2>
+<p>Environment Settings</p>
+<img alt="environment settings" src="_images/environment.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Option to use a different env. texture for lighting and background image</p>
+</div>
+</section>
+<section id="extra-location">
+<h2>Extra Location<a class="headerlink" href="#extra-location" title="Permalink to this heading"></a></h2>
+<p>Offset the location of extra instances on the Z axis</p>
+<img alt="extra location settings" src="_images/extra_location.png" />
+</section>
+<section id="extra-scale">
+<h2>Extra Scale<a class="headerlink" href="#extra-scale" title="Permalink to this heading"></a></h2>
+<p>Change the scale of extra instances</p>
+<img alt="extra scale settings" src="_images/extra_scale.png" />
+</section>
+<section id="extra-rotation">
+<h2>Extra Rotation<a class="headerlink" href="#extra-rotation" title="Permalink to this heading"></a></h2>
+<p>Change the rotation of extra instances by setting an object to “look at”</p>
+<img alt="extra rotation settings" src="_images/extra_rotation.png" />
+</section>
+<section id="extra-shading">
+<h2>Extra Shading<a class="headerlink" href="#extra-shading" title="Permalink to this heading"></a></h2>
+<p>Shading settings for extra instances</p>
+<img alt="extra shading settings" src="_images/extra_shading.png" />
+</section>
+<section id="extra-glass">
+<h2>Extra Glass<a class="headerlink" href="#extra-glass" title="Permalink to this heading"></a></h2>
+<p>Settings for the glass layer</p>
+<img alt="extra glass settings" src="_images/extra_glass.png" />
+</section>
+<section id="extra-plane">
+<h2>Extra Plane<a class="headerlink" href="#extra-plane" title="Permalink to this heading"></a></h2>
+<p>Settings for the extra plane layer</p>
+<img alt="extra plane settings" src="_images/extra_plane.png" />
+</section>
+<section id="boolean-settings">
+<h2>Boolean Settings<a class="headerlink" href="#boolean-settings" title="Permalink to this heading"></a></h2>
+<p>Use a mesh to cut into the whole scene</p>
+<img alt="boolean settings" src="_images/boolean_settings.png" />
+</section>
+<section id="frame-settings">
+<h2>Frame Settings<a class="headerlink" href="#frame-settings" title="Permalink to this heading"></a></h2>
+<p>Settings for the frame</p>
+<img alt="frame settings" src="_images/frame_settings.png" />
+</section>
+<section id="floor-settings">
+<h2>Floor Settings<a class="headerlink" href="#floor-settings" title="Permalink to this heading"></a></h2>
+<p>Settings for the floor</p>
+<img alt="floor settings" src="_images/floor_settings.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Mark Elek, David Elek.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
