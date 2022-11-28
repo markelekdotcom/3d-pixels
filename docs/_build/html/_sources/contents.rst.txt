@@ -4,5 +4,6 @@
 
    quickstart
    settings
+   custom_materials
    changelog
    contact

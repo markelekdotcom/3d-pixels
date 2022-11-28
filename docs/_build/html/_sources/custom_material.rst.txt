@@ -1,0 +1,19 @@
+#################
+Custom Materials
+#################
+
+When creating your custom material:
+- Materials that include drivers require care (e.g. Base Instance and Extra Instance materials)
+- Copy an existing one and build upon it
+- or check out how it controls the color of the instances and copy that part to your material
+- For a material to show up in the "Project Settings" panel include one or more keywords at the end of it's name:
+
+------------------
+Keywords
+------------------
+- "_BI" (as in Base Instance)
+- "_EI" (as in Extra Instance)
+- "_EG" (as in Extra Glass)
+- "_EP" (as in Extra Plane)
+- "_FR" (as in Frame)
+- "_FL" (as in Floor)
