@@ -1,5 +1,6 @@
 # 3d-pixels
-3D Pixels - Transformative Art Tool #001 is a blender project using geometry nodes that let's you create 3D pixel/pin art - like renders quickly by transforming 2 pictures into a totally new one with options to guide this process.
+3D Pixels - Transformative Art Tool #001 
+is a blender project using geometry nodes that let's you create 3D pixel/pin art - like renders quickly by transforming 2 pictures into a totally new one with options to guide this process.
 
 ![3DPixels](docs/images/3dpixels_index.png)
 
