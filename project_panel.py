@@ -1,4 +1,4 @@
-""" 
+"""
 
 
  ______   __  __   __   __
@@ -22,6 +22,7 @@ import bpy
 import contextlib
 from bpy.props import EnumProperty, BoolProperty, FloatProperty, FloatVectorProperty
 from bpy.types import Panel
+from bpy.app.handlers import persistent
 
 BASIC_INSTANCE_KW = "_BI"
 EXTRA_INSTANCE_KW = "_EI"
@@ -253,6 +254,8 @@ class VIEW3D_PT_base_scale(BASE_PANEL, Panel):
                      text="Render Base Scale XY", slider=True)
             row = box.row()
             row.prop(scene, 'detail_height', text="Base Height", slider=True)
+            row = box.row()
+            row.prop(scene, 'detail_height_multiplier', text="Base Height Multiplier", slider=True)
             row = box.row()
             row.prop(scene, 'negative_size_x',
                      text="Subtract Scale X", slider=True)
@@ -749,13 +752,12 @@ class VIEW3D_PT_about(BASE_PANEL, Panel):
         row = layout.row()
         # TODO check for updates
 
-        # TODO change url
         row.operator(
-            "wm.url_open", text="Documentation (URL)").url = "https://3dpixels.readthedocs.io/en/latest/"
+            "wm.url_open", text="Documentation (URL)").url = "https://3d-pixels.readthedocs.io/en/latest/"
 
 
 def sampling_mode_enum_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     sampling_mode = scene.sampling_mode
     plane = bpy.data.objects["Plane"]
     settings = plane.modifiers["Settings"]
@@ -773,7 +775,7 @@ def sampling_mode_enum_set(self, context):
 
 
 def shading_mode_enum_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     shading_mode = scene.shading_mode
@@ -803,7 +805,7 @@ def shading_mode_enum_set(self, context):
 
 
 def extra_shading_mode_enum_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     shading_mode = scene.extra_shading_mode
@@ -836,7 +838,7 @@ def extra_shading_mode_enum_set(self, context):
 
 
 def use_extra_glass_bool_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_4"] = 1 if scene.use_extra_glass else 0
@@ -844,7 +846,7 @@ def use_extra_glass_bool_set(self, context):
 
 
 def extra_glass_material_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     extra_glass_gm_mat_node = bpy.data.node_groups["Extra Glass Nodes"].nodes["Set Material"]
     extra_glass_gm_mat_node.inputs['Material'].default_value = scene.extra_glass_material
@@ -861,7 +863,7 @@ def extra_glass_material_poll(self, material):
 
 
 def extra_plane_material_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     extra_plane_gm_mat_node = extra_plane_gm_mat_node = bpy.data.node_groups[
         "Extra Glass Nodes"].nodes["Set Material.001"]
@@ -879,7 +881,7 @@ def extra_plane_material_poll(self, material):
 
 
 def use_extra_plane_bool_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_30"] = 1 if scene.use_extra_plane else 0
@@ -887,7 +889,7 @@ def use_extra_plane_bool_set(self, context):
 
 
 def pixelation_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_33"] = scene.pixelation
@@ -895,7 +897,7 @@ def pixelation_float_set(self, context):
 
 
 def extra_pixelation_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_34"] = scene.extra_pixelation
@@ -904,15 +906,16 @@ def extra_pixelation_float_set(self, context):
 
 
 def detail_size_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_2"] = scene.detail_size
     plane.update_tag()
+    plane.modifiers["Settings"].update_tag()
 
 
 def render_detail_size_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_40"] = scene.render_detail_size
@@ -920,15 +923,23 @@ def render_detail_size_float_set(self, context):
 
 
 def detail_height_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_3"] = scene.detail_height
     plane.update_tag()
 
 
+def detail_height_multiplier_float_set(self, context):
+    scene = bpy.context.scene
+    plane = bpy.data.objects["Plane"]
+    plane_settings = plane.modifiers["Settings"]
+    plane_settings["Input_62"] = scene.detail_height_multiplier
+    plane.update_tag()
+
+
 def extra_glass_width_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_5"] = scene.extra_glass_width
@@ -937,7 +948,7 @@ def extra_glass_width_float_set(self, context):
 
 
 def use_pixelation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_16"] = 1 if scene.use_pixelation else 0
@@ -945,7 +956,7 @@ def use_pixelation_set(self, context):
 
 
 def use_extra_pixelation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_25"] = 1 if scene.use_extra_pixelation else 0
@@ -954,7 +965,7 @@ def use_extra_pixelation_set(self, context):
 
 
 def extra_object_treshold_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_17"] = scene.extra_object_treshold
@@ -963,7 +974,7 @@ def extra_object_treshold_float_set(self, context):
 
 
 def use_extra_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_18"] = 1 if scene.use_extra_object else 0
@@ -971,7 +982,7 @@ def use_extra_object_set(self, context):
 
 
 def gap_size_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_21"] = scene.gap_size
@@ -979,7 +990,7 @@ def gap_size_float_set(self, context):
 
 
 def negative_size_x_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_19"] = scene.negative_size_x
@@ -987,7 +998,7 @@ def negative_size_x_float_set(self, context):
 
 
 def negative_size_y_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_20"] = scene.negative_size_y
@@ -995,7 +1006,7 @@ def negative_size_y_float_set(self, context):
 
 
 def keep_extra_scale_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_22"] = 1 if scene.keep_extra_scale else 0
@@ -1004,7 +1015,7 @@ def keep_extra_scale_set(self, context):
 
 
 def offset_z_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_23"] = scene.offset_z
@@ -1013,7 +1024,7 @@ def offset_z_float_set(self, context):
 
 
 def use_frustum_culling_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_26"] = 1 if scene.use_frustum_culling else 0
@@ -1021,7 +1032,7 @@ def use_frustum_culling_set(self, context):
 
 
 def culling_camera_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     if scene.culling_camera is not None:
         gm_frustum_culling_node_group = bpy.data.node_groups[
             "Instancing Nodes"].nodes["FrustumCullingGroup"]
@@ -1032,7 +1043,7 @@ def culling_camera_set(self, context):
 
 
 def use_instances_only_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_27"] = 1 if scene.use_instances_only else 0
@@ -1048,7 +1059,7 @@ def use_instances_only_set(self, context):
 
 
 def sparse_grid_x_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_28"] = scene.sparse_grid_x
@@ -1056,7 +1067,7 @@ def sparse_grid_x_float_set(self, context):
 
 
 def sparse_grid_y_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_29"] = scene.sparse_grid_y
@@ -1064,14 +1075,14 @@ def sparse_grid_y_float_set(self, context):
 
 
 def boolean_operation_enum_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane.modifiers["Boolean"].solver = scene.boolean_operation
     plane.update_tag()
 
 
 def use_boolean_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     boolean_modifier = plane.modifiers["Boolean"]
     boolean_modifier.show_viewport = scene.use_boolean
@@ -1080,7 +1091,7 @@ def use_boolean_set(self, context):
 
 
 def base_material_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     gm_set_base_material_node = bpy.data.node_groups["Instancing Nodes"].nodes["Set Material"]
     gm_set_base_material_node.inputs[2].default_value = scene.base_material
@@ -1092,7 +1103,7 @@ def base_material_poll(self, material):
 
 
 def extra_material_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     gm_set_extra_material_node = bpy.data.node_groups["Instancing Nodes"].nodes["Set Material.001"]
     gm_set_extra_material_node.inputs[2].default_value = scene.extra_material
@@ -1104,7 +1115,7 @@ def extra_material_poll(self, material):
 
 
 def bevel_size_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_36"] = scene.bevel_size
@@ -1112,7 +1123,7 @@ def bevel_size_float_set(self, context):
 
 
 def extra_bevel_size_float_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_37"] = scene.extra_bevel_size
@@ -1120,7 +1131,7 @@ def extra_bevel_size_float_set(self, context):
 
 
 def realize_on_render_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_38"] = 1 if scene.realize_on_render else 0
@@ -1128,7 +1139,7 @@ def realize_on_render_set(self, context):
 
 
 def active_frame_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     frame_ob_gm_node = bpy.data.node_groups["Frame Nodes"].nodes["Object Info"].inputs[0]
     frame_ob_gm_node.default_value = scene.active_frame_object
 
@@ -1138,7 +1149,7 @@ def active_frame_object_poll(self, object):
 
 
 def frame_scale_offset_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_39"] = scene.frame_scale_offset
@@ -1146,7 +1157,7 @@ def frame_scale_offset_set(self, context):
 
 
 def frame_material_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     frame_ob = scene.active_frame_object
     frame_ob.active_material = scene.frame_material
@@ -1163,7 +1174,7 @@ def frame_material_poll(self, material):
 
 
 def floor_material_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     floor_ob = bpy.data.objects["Floor"]
     floor_ob.active_material = scene.floor_material
@@ -1180,7 +1191,7 @@ def floor_material_poll(self, material):
 
 
 def use_random_rotation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_41"] = 1 if scene.use_random_rotation else 0
@@ -1188,7 +1199,7 @@ def use_random_rotation_set(self, context):
 
 
 def snap_rotation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_42"] = 1 if scene.snap_rotation else 0
@@ -1196,7 +1207,7 @@ def snap_rotation_set(self, context):
 
 
 def use_extra_random_rotation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_43"] = 1 if scene.use_extra_random_rotation else 0
@@ -1204,7 +1215,7 @@ def use_extra_random_rotation_set(self, context):
 
 
 def extra_snap_rotation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_44"] = 1 if scene.extra_snap_rotation else 0
@@ -1212,7 +1223,7 @@ def extra_snap_rotation_set(self, context):
 
 
 def extra_scale_offset_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_45"] = scene.extra_scale_offset
@@ -1220,7 +1231,7 @@ def extra_scale_offset_set(self, context):
 
 
 def use_extra_random_scale_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_46"] = scene.use_extra_random_scale
@@ -1228,7 +1239,7 @@ def use_extra_random_scale_set(self, context):
 
 
 def extra_random_scale_min_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_47"] = scene.extra_random_scale_min
@@ -1236,7 +1247,7 @@ def extra_random_scale_min_set(self, context):
 
 
 def extra_random_scale_max_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_48"] = scene.extra_random_scale_max
@@ -1244,7 +1255,7 @@ def extra_random_scale_max_set(self, context):
 
 
 def threshold_mode_enum_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_49"] = 1 if scene.threshold_mode == "GREATER" else 0
@@ -1252,7 +1263,7 @@ def threshold_mode_enum_set(self, context):
 
 
 def active_base_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     active_base_ob_gm_node = bpy.data.node_groups["Instancing Nodes"].nodes["Object Info"].inputs[0]
     active_base_ob_gm_node.default_value = scene.active_base_object
 
@@ -1262,7 +1273,7 @@ def active_base_object_poll(self, object):
 
 
 def active_extra_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     active_extra_ob_gm_node = bpy.data.node_groups["Instancing Nodes"].nodes["Object Info.001"].inputs[0]
     active_extra_ob_gm_node.default_value = scene.active_extra_object
 
@@ -1272,7 +1283,7 @@ def active_extra_object_poll(self, object):
 
 
 def active_boolean_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     boolean_modifier = bpy.data.objects["Plane"].modifiers["Boolean"]
     boolean_modifier.object = scene.active_boolean_object
 
@@ -1282,7 +1293,7 @@ def active_boolean_object_poll(self, object):
 
 
 def extra_glass_color_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     mat = scene.extra_glass_material
     glass_material_node = mat.node_tree.nodes.get("RGB")
     glass_material_node.outputs[0].default_value = scene.extra_glass_color
@@ -1293,13 +1304,13 @@ def extra_glass_color_set(self, context):
 
 
 def base_proxy_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     proxy_ob_gm_node = bpy.data.node_groups["Instancing Nodes"].nodes["Object Info.002"]
     proxy_ob_gm_node.inputs[0].default_value = scene.base_proxy_object
 
 
 def extra_proxy_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     extra_proxy_ob_gm_node = bpy.data.node_groups["Instancing Nodes"].nodes["Object Info.003"]
     extra_proxy_ob_gm_node.inputs[0].default_value = scene.extra_proxy_object
 
@@ -1309,7 +1320,7 @@ def proxy_object_poll(self, object):
 
 
 def use_base_proxy_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_55"] = 1 if scene.use_base_proxy_object else 0
@@ -1317,7 +1328,7 @@ def use_base_proxy_object_set(self, context):
 
 
 def use_extra_proxy_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_56"] = 1 if scene.use_extra_proxy_object else 0
@@ -1325,7 +1336,7 @@ def use_extra_proxy_object_set(self, context):
 
 
 def use_look_at_rotation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_57"] = 1 if scene.use_look_at_rotation else 0
@@ -1333,7 +1344,7 @@ def use_look_at_rotation_set(self, context):
 
 
 def look_at_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     look_at_ob_gm_node = bpy.data.node_groups["Instancing Nodes"].nodes["LookAtRotation"]
     look_at_ob_gm_node.inputs[0].default_value = scene.extra_proxy_object
 
@@ -1343,7 +1354,7 @@ def look_at_object_set(self, context):
 
 
 def extra_location_offset_z_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_58"] = scene.extra_location_offset_z
@@ -1351,7 +1362,7 @@ def extra_location_offset_z_set(self, context):
 
 
 def use_extra_look_at_rotation_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_59"] = 1 if scene.use_extra_look_at_rotation else 0
@@ -1359,13 +1370,13 @@ def use_extra_look_at_rotation_set(self, context):
 
 
 def extra_look_at_object_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     look_at_ob_gm_node = bpy.data.node_groups["Instancing Nodes"].nodes["ExtraLookAtRotation"]
     look_at_ob_gm_node.inputs[0].default_value = scene.extra_proxy_object
 
 
 def keep_base_height_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_60"] = 1 if scene.keep_base_height else 0
@@ -1373,7 +1384,7 @@ def keep_base_height_set(self, context):
 
 
 def background_mode_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_61"] = 0 if scene.background_mode == 'COLOR' else 1
@@ -1381,7 +1392,7 @@ def background_mode_set(self, context):
 
 
 def background_color_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     bg_color_node = bpy.data.worlds["World"].node_tree.nodes["Background Color"]
     bg_color_node.inputs[0].default_value = scene.background_color
 
@@ -1391,7 +1402,7 @@ def contains_keyword(keyword, string):
 
 
 def extra_plane_color_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     mat = scene.extra_plane_material
     plane_material_node = mat.node_tree.nodes.get("RGB")
     plane_material_node.outputs[0].default_value = scene.extra_plane_color
@@ -1402,7 +1413,7 @@ def extra_plane_color_set(self, context):
 
 
 def floor_color_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     mat = scene.floor_material
     floor_material_node = mat.node_tree.nodes.get("RGB")
     floor_material_node.outputs[0].default_value = scene.floor_color
@@ -1412,7 +1423,7 @@ def floor_color_set(self, context):
 
 
 def frame_color_set(self, context):
-    scene = context.scene
+    scene = bpy.context.scene
     mat = scene.frame_material
     frame_material_node = mat.node_tree.nodes.get("RGB")
     frame_material_node.outputs[0].default_value = scene.frame_color
@@ -1448,6 +1459,8 @@ def register():
         description="Change Sampling Mode (All Channels, Red, Green, Blue)",
         update=sampling_mode_enum_set
     )
+    
+    bpy.app.handlers.frame_change_pre.append(sampling_mode_enum_set)
 
     shading_mode_items = (('VERTEX', 'Vertex Color', ''),
                           ('TEXTURED', 'Textured', ''),
@@ -1458,23 +1471,29 @@ def register():
         items=shading_mode_items,
         default='VERTEX',
         description="Change Shading Mode (Vertex, Textured)",
-        update=shading_mode_enum_set
+        update=shading_mode_enum_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(shading_mode_enum_set)
 
     bpy.types.Scene.extra_shading_mode = bpy.props.EnumProperty(
         name="extra_shading_mode",
         items=shading_mode_items,
         default='VERTEX',
         description="Change Extra Shading Mode (Vertex, Textured)",
-        update=extra_shading_mode_enum_set
+        update=extra_shading_mode_enum_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_shading_mode_enum_set)
 
     bpy.types.Scene.use_extra_glass = bpy.props.BoolProperty(
         name="use_extra_glass",
         default=False,
         description="Use Extra Glass",
-        update=use_extra_glass_bool_set
+        update=use_extra_glass_bool_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_glass_bool_set)
 
     bpy.types.Scene.pixelation = bpy.props.FloatProperty(
         name="pixelation",
@@ -1487,6 +1506,7 @@ def register():
         update=pixelation_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(pixelation_float_set)
 
     bpy.types.Scene.extra_pixelation = bpy.props.FloatProperty(
         name="extra_pixelation",
@@ -1499,6 +1519,7 @@ def register():
         update=extra_pixelation_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_pixelation_float_set)
 
     bpy.types.Scene.detail_size = bpy.props.FloatProperty(
         name="detail_size",
@@ -1511,6 +1532,7 @@ def register():
         update=detail_size_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(detail_size_float_set)
 
     bpy.types.Scene.render_detail_size = bpy.props.FloatProperty(
         name="render_detail_size",
@@ -1523,18 +1545,33 @@ def register():
         update=render_detail_size_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(render_detail_size_float_set)
 
     bpy.types.Scene.detail_height = bpy.props.FloatProperty(
         name="detail_height",
         default=20,
         min=1.0,
-        max=100,
+        max=1000,
         soft_min=1.0,
         soft_max=100,
         description="Detail Height",
         update=detail_height_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(detail_height_float_set)
+
+    bpy.types.Scene.detail_height_multiplier = bpy.props.FloatProperty(
+        name="detail_height",
+        default=1,
+        min=1.0,
+        max=1000,
+        soft_min=1.0,
+        soft_max=100,
+        description="Detail Height Multiplier",
+        update=detail_height_multiplier_float_set,
+        options={'ANIMATABLE'}
+    )
+    bpy.app.handlers.frame_change_pre.append(detail_height_multiplier_float_set)
 
     bpy.types.Scene.extra_glass_width = bpy.props.FloatProperty(
         name="extra_glass_width",
@@ -1547,6 +1584,7 @@ def register():
         update=extra_glass_width_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_glass_width_float_set)
 
     bpy.types.Scene.use_pixelation = bpy.props.BoolProperty(
         name="use_pixelation",
@@ -1555,6 +1593,7 @@ def register():
         update=use_pixelation_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_pixelation_set)
 
     bpy.types.Scene.use_extra_pixelation = bpy.props.BoolProperty(
         name="use_extra_pixelation",
@@ -1563,6 +1602,7 @@ def register():
         update=use_extra_pixelation_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_pixelation_set)
 
     bpy.types.Scene.extra_object_treshold = bpy.props.FloatProperty(
         name="extra_object_treshold ",
@@ -1573,13 +1613,16 @@ def register():
         update=extra_object_treshold_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_object_treshold_float_set)
 
     bpy.types.Scene.use_extra_object = bpy.props.BoolProperty(
         name="use_extra_object",
         default=True,
         description="Use extra object on top of base instances",
-        update=use_extra_object_set
+        update=use_extra_object_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_object_set)
 
     bpy.types.Scene.gap_size = bpy.props.FloatProperty(
         name="gap_size",
@@ -1590,6 +1633,7 @@ def register():
         update=gap_size_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(gap_size_float_set)
 
     bpy.types.Scene.negative_size_x = bpy.props.FloatProperty(
         name="negative_size_x",
@@ -1600,6 +1644,7 @@ def register():
         update=negative_size_x_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(negative_size_x_float_set)
 
     bpy.types.Scene.negative_size_y = bpy.props.FloatProperty(
         name="negative_size_y",
@@ -1610,13 +1655,16 @@ def register():
         update=negative_size_y_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(negative_size_y_float_set)
 
     bpy.types.Scene.keep_extra_scale = bpy.props.BoolProperty(
         name="keep_extra_scale",
         default=True,
         description="Keep the scale of extra objects",
-        update=keep_extra_scale_set
+        update=keep_extra_scale_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(keep_extra_scale_set)
 
     bpy.types.Scene.offset_z = bpy.props.FloatProperty(
         name="offset_z",
@@ -1627,6 +1675,7 @@ def register():
         update=offset_z_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(offset_z_float_set)
 
     bpy.types.Scene.use_frustum_culling = bpy.props.BoolProperty(
         name="use_frustum_culling",
@@ -1635,22 +1684,28 @@ def register():
             "Use Frustum Culling in viewport to improve performance.\n"
             "(messes up vertex colors, useful while blocking in shapes)"
         ),
-        update=use_frustum_culling_set
+        update=use_frustum_culling_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_frustum_culling_set)
 
     bpy.types.Scene.culling_camera = bpy.props.PointerProperty(
         name="culling_camera",
         description="Camera to use for frustum culling",
         type=bpy.types.Camera,
-        update=culling_camera_set
+        update=culling_camera_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(culling_camera_set)
 
     bpy.types.Scene.use_instances_only = bpy.props.BoolProperty(
         name="use_instances_only",
         default=True,
         description="Use instances instead of realizing geometry (vertex color and extra object won't work)",
-        update=use_instances_only_set
+        update=use_instances_only_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_instances_only_set)
 
     bpy.types.Scene.sparse_grid_x = bpy.props.FloatProperty(
         name="sparse_grid_x",
@@ -1661,6 +1716,7 @@ def register():
         update=sparse_grid_x_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(sparse_grid_x_float_set)
 
     bpy.types.Scene.sparse_grid_y = bpy.props.FloatProperty(
         name="sparse_grid_y",
@@ -1671,13 +1727,16 @@ def register():
         update=sparse_grid_y_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(sparse_grid_y_float_set)
 
     bpy.types.Scene.use_extra_plane = bpy.props.BoolProperty(
         name="use_extra_plane",
         default=True,
         description="Use Extra Plane",
-        update=use_extra_plane_bool_set
+        update=use_extra_plane_bool_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_plane_bool_set)
 
     boolean_operation_items = (('DIFFERENCE', 'Difference', ''),
                                ('INTERSECT', 'Intersect', ''),
@@ -1687,31 +1746,39 @@ def register():
         name="boolean_operation",
         items=boolean_operation_items,
         default='DIFFERENCE',
-        update=boolean_operation_enum_set
+        update=boolean_operation_enum_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(boolean_operation_enum_set)
 
     bpy.types.Scene.use_boolean = bpy.props.BoolProperty(
         name="use_boolean",
         default=True,
         description="Use Boolean Operation",
-        update=use_boolean_set
+        update=use_boolean_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_boolean_set)
 
     bpy.types.Scene.base_material = bpy.props.PointerProperty(
         name="base_material",
         description="Base Material",
         type=bpy.types.Material,
         update=base_material_set,
-        poll=base_material_poll
+        poll=base_material_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(base_material_set)
 
     bpy.types.Scene.extra_material = bpy.props.PointerProperty(
         name="extra_material",
         description="Extra Material",
         type=bpy.types.Material,
         update=extra_material_set,
-        poll=extra_material_poll
+        poll=extra_material_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_material_set)
 
     bpy.types.Scene.bevel_size = bpy.props.FloatProperty(
         name="bevel_size",
@@ -1724,6 +1791,7 @@ def register():
         update=bevel_size_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(bevel_size_float_set)
 
     bpy.types.Scene.extra_bevel_size = bpy.props.FloatProperty(
         name="extra_bevel_size",
@@ -1736,6 +1804,7 @@ def register():
         update=extra_bevel_size_float_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_bevel_size_float_set)
 
     bpy.types.Scene.realize_on_render = bpy.props.BoolProperty(
         name="realize_on_render",
@@ -1743,14 +1812,17 @@ def register():
         description="Realize instances when rendering",
         update=realize_on_render_set
     )
+    bpy.app.handlers.frame_change_pre.append(realize_on_render_set)
 
     bpy.types.Scene.active_frame_object = bpy.props.PointerProperty(
         name="active_frame_object",
         description="Currently active frame object",
         type=bpy.types.Object,
         update=active_frame_object_set,
-        poll=active_frame_object_poll
+        poll=active_frame_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(active_frame_object_set)
 
     bpy.types.Scene.frame_scale_offset = bpy.props.FloatProperty(
         name="frame_scale_offset",
@@ -1763,66 +1835,83 @@ def register():
         update=frame_scale_offset_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(frame_scale_offset_set)
 
     bpy.types.Scene.frame_material = bpy.props.PointerProperty(
         name="frame_material",
         description="Frame Material",
         type=bpy.types.Material,
         update=frame_material_set,
-        poll=frame_material_poll
+        poll=frame_material_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(frame_material_set)
 
     bpy.types.Scene.floor_material = bpy.props.PointerProperty(
         name="floor_material",
         description="Floor Material",
         type=bpy.types.Material,
         update=floor_material_set,
-        poll=floor_material_poll
+        poll=floor_material_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(floor_material_set)
 
     bpy.types.Scene.extra_glass_material = bpy.props.PointerProperty(
         name="extra_glass_material",
         description="Extra Glass Material",
         type=bpy.types.Material,
         update=extra_glass_material_set,
-        poll=extra_glass_material_poll
+        poll=extra_glass_material_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_glass_material_set)
 
     bpy.types.Scene.extra_plane_material = bpy.props.PointerProperty(
         name="extra_plane_material",
         description="Extra Plane Material",
         type=bpy.types.Material,
         update=extra_plane_material_set,
-        poll=extra_plane_material_poll
+        poll=extra_plane_material_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_plane_material_set)
 
     bpy.types.Scene.use_random_rotation = bpy.props.BoolProperty(
         name="use_random_rotation",
         default=False,
         description="Use Random Rotation",
-        update=use_random_rotation_set
+        update=use_random_rotation_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_random_rotation_set)
 
     bpy.types.Scene.snap_rotation = bpy.props.BoolProperty(
         name="snap_rotation",
         default=False,
         description="Snap rotation to 90 degree increments",
-        update=snap_rotation_set
+        update=snap_rotation_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(snap_rotation_set)
 
     bpy.types.Scene.use_extra_random_rotation = bpy.props.BoolProperty(
         name="use_extra_random_rotation",
         default=False,
         description="Use Extra Random Rotation",
-        update=use_extra_random_rotation_set
+        update=use_extra_random_rotation_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_random_rotation_set)
 
     bpy.types.Scene.extra_snap_rotation = bpy.props.BoolProperty(
         name="extra_snap_rotation",
         default=False,
         description="Snap Extra Object's rotation to 90 degree increments",
-        update=extra_snap_rotation_set
+        update=extra_snap_rotation_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_snap_rotation_set)
 
     bpy.types.Scene.extra_scale_offset = bpy.props.FloatVectorProperty(
         name="extra_scale_offset",
@@ -1832,14 +1921,18 @@ def register():
         max=100.0,
         description="Extra Object scale offset",
         update=extra_scale_offset_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_scale_offset_set)
 
     bpy.types.Scene.use_extra_random_scale = bpy.props.BoolProperty(
         name="use_extra_random_scale",
         default=False,
         description="Extra Object random scale",
-        update=use_extra_random_scale_set
+        update=use_extra_random_scale_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_random_scale_set)
 
     bpy.types.Scene.extra_random_scale_min = bpy.props.FloatVectorProperty(
         name="extra_random_scale_min",
@@ -1849,7 +1942,9 @@ def register():
         max=100.0,
         description="Extra Object random scale min",
         update=extra_random_scale_min_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_random_scale_min_set)
 
     bpy.types.Scene.extra_random_scale_max = bpy.props.FloatVectorProperty(
         name="extra_random_scale_max",
@@ -1859,7 +1954,9 @@ def register():
         max=100.0,
         description="Extra Object random scale max",
         update=extra_random_scale_max_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_random_scale_max_set)
 
     threshold_items = (('GREATER', 'Greater Than', ''),
                        ('LESS', 'Less Than', ''),
@@ -1869,32 +1966,40 @@ def register():
         name="threshold_mode",
         items=threshold_items,
         default='GREATER',
-        update=threshold_mode_enum_set
+        update=threshold_mode_enum_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(threshold_mode_enum_set)
 
     bpy.types.Scene.active_base_object = bpy.props.PointerProperty(
         name="active_base_object",
         description="Currently active base instance object",
         type=bpy.types.Object,
         update=active_base_object_set,
-        poll=active_base_object_poll
+        poll=active_base_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(active_base_object_set)
 
     bpy.types.Scene.active_extra_object = bpy.props.PointerProperty(
         name="active_extra_object",
         description="Currently active extra instance object",
         type=bpy.types.Object,
         update=active_extra_object_set,
-        poll=active_extra_object_poll
+        poll=active_extra_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(active_extra_object_set)
 
     bpy.types.Scene.active_boolean_object = bpy.props.PointerProperty(
         name="active_boolean_object",
         description="Currently active boolean object",
         type=bpy.types.Object,
         update=active_boolean_object_set,
-        poll=active_boolean_object_poll
+        poll=active_boolean_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(active_boolean_object_set)
 
     bpy.types.Scene.extra_glass_color = bpy.props.FloatVectorProperty(
         name="extra_glass_color",
@@ -1905,67 +2010,85 @@ def register():
         default=(1.0, 1.0, 1.0, 1.0),
         description="Extra Glass Color",
         update=extra_glass_color_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_glass_color_set)
 
     bpy.types.Scene.base_proxy_object = bpy.props.PointerProperty(
         name="base_proxy_object",
         description="Proxy object for base instance",
         type=bpy.types.Object,
         update=base_proxy_object_set,
-        poll=proxy_object_poll
+        poll=proxy_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(base_proxy_object_set)
 
     bpy.types.Scene.extra_proxy_object = bpy.props.PointerProperty(
         name="extra_proxy_object",
         description="Proxy object for extra instance",
         type=bpy.types.Object,
         update=extra_proxy_object_set,
-        poll=proxy_object_poll
+        poll=proxy_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_proxy_object_set)
 
     bpy.types.Scene.use_base_proxy_object = bpy.props.BoolProperty(
         name="use_base_proxy_object",
         default=False,
         description="Use base proxy object",
-        update=use_base_proxy_object_set
+        update=use_base_proxy_object_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_base_proxy_object_set)
 
     bpy.types.Scene.use_extra_proxy_object = bpy.props.BoolProperty(
         name="use_extra_proxy_object",
         default=False,
         description="Use extra proxy object",
-        update=use_extra_proxy_object_set
+        update=use_extra_proxy_object_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_proxy_object_set)
 
     bpy.types.Scene.use_look_at_rotation = bpy.props.BoolProperty(
         name="use_look_at_rotation",
         default=False,
         description="Use Look At Rotation",
-        update=use_look_at_rotation_set
+        update=use_look_at_rotation_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_look_at_rotation_set)
 
     bpy.types.Scene.look_at_object = bpy.props.PointerProperty(
         name="look_at_object",
         description="Look At Object",
         type=bpy.types.Object,
         update=look_at_object_set,
-        # poll=look_at_object_poll
+        # poll=look_at_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(look_at_object_set)
 
     bpy.types.Scene.use_extra_look_at_rotation = bpy.props.BoolProperty(
         name="use_extra_look_at_rotation",
         default=False,
         description="Use Extra Look At Rotation",
-        update=use_extra_look_at_rotation_set
+        update=use_extra_look_at_rotation_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(use_extra_look_at_rotation_set)
 
     bpy.types.Scene.extra_look_at_object = bpy.props.PointerProperty(
         name="extra_look_at_object",
         description="Extra Look At Object",
         type=bpy.types.Object,
         update=extra_look_at_object_set,
-        # poll=look_at_object_poll
+        # poll=look_at_object_poll,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_look_at_object_set)
 
     bpy.types.Scene.extra_location_offset_z = bpy.props.FloatProperty(
         name="extra_location_offset_z",
@@ -1978,13 +2101,16 @@ def register():
         update=extra_location_offset_z_set,
         options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_location_offset_z_set)
 
     bpy.types.Scene.keep_base_height = bpy.props.BoolProperty(
         name="keep_base_height",
         default=False,
         description="Keep Base Height",
-        update=keep_base_height_set
+        update=keep_base_height_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(keep_base_height_set)
 
     background_mode_items = (('COLOR', 'Solid Color', ''),
                              ('TEXTURE', 'Environment Texture', ''),)
@@ -1994,8 +2120,10 @@ def register():
         items=background_mode_items,
         default='COLOR',
         description="Mode to use for world background",
-        update=background_mode_set
+        update=background_mode_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(background_mode_set)
 
     bpy.types.Scene.background_color = bpy.props.FloatVectorProperty(
         name="background_color",
@@ -2006,7 +2134,9 @@ def register():
         default=(0.0, 0.0, 0.0, 1.0),
         description="Background Color",
         update=background_color_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(background_color_set)
 
     bpy.types.Scene.extra_plane_color = bpy.props.FloatVectorProperty(
         name="extra_plane_color",
@@ -2017,7 +2147,9 @@ def register():
         default=(1.0, 1.0, 1.0, 1.0),
         description="Extra Plane Color",
         update=extra_plane_color_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(extra_plane_color_set)
 
     bpy.types.Scene.floor_color = bpy.props.FloatVectorProperty(
         name="floor_color",
@@ -2028,7 +2160,9 @@ def register():
         default=(1.0, 1.0, 1.0, 1.0),
         description="Floor Color",
         update=floor_color_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(floor_color_set)
 
     bpy.types.Scene.frame_color = bpy.props.FloatVectorProperty(
         name="frame_color",
@@ -2039,7 +2173,9 @@ def register():
         default=(1.0, 1.0, 1.0, 1.0),
         description="Frame Color",
         update=frame_color_set,
+        options={'ANIMATABLE'}
     )
+    bpy.app.handlers.frame_change_pre.append(frame_color_set)
 
 
 def unregister():
@@ -2052,6 +2188,7 @@ def unregister():
     del bpy.types.Scene.pixelation
     del bpy.types.Scene.detail_size
     del bpy.types.Scene.detail_height
+    del bpy.types.Scene.detail_height_multiplier
     del bpy.types.Scene.extra_glass_width
     del bpy.types.Scene.use_pixelation
     del bpy.types.Scene.extra_object_treshold
