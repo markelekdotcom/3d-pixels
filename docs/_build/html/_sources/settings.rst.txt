@@ -64,6 +64,8 @@ Change the scale of base instances
 .. image:: images/base_scale.png
     :alt: base scale settings
 
+.. note:: Can type in a number up to 1000 for the "Base Height Multiplier"
+
 Base Rotation
 --------------
 Change the rotation of base instances
