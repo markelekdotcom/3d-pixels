@@ -22,7 +22,7 @@ import bpy
 import contextlib
 from bpy.props import EnumProperty, BoolProperty, FloatProperty, FloatVectorProperty
 from bpy.types import Panel
-from bpy.app.handlers import persistent
+
 
 BASIC_INSTANCE_KW = "_BI"
 EXTRA_INSTANCE_KW = "_EI"
@@ -255,7 +255,8 @@ class VIEW3D_PT_base_scale(BASE_PANEL, Panel):
             row = box.row()
             row.prop(scene, 'detail_height', text="Base Height", slider=True)
             row = box.row()
-            row.prop(scene, 'detail_height_multiplier', text="Base Height Multiplier", slider=True)
+            row.prop(scene, 'detail_height_multiplier',
+                     text="Base Height Multiplier", slider=True)
             row = box.row()
             row.prop(scene, 'negative_size_x',
                      text="Subtract Scale X", slider=True)
@@ -1433,6 +1434,11 @@ def frame_color_set(self, context):
         plane.update_tag()
 
 
+def set_to_initial_frame(self, context):
+    scene = bpy.context.scene
+    scene.frame_set(scene.frame_current)
+
+
 classes = (VIEW3D_PT_viewport_optimization_settings, VIEW3D_PT_quick_settings,
            VIEW3D_PT_grid_settings, VIEW3D_PT_instance_objects,
            VIEW3D_PT_base_scale, VIEW3D_PT_base_rotation, VIEW3D_PT_base_shading,
@@ -1459,7 +1465,7 @@ def register():
         description="Change Sampling Mode (All Channels, Red, Green, Blue)",
         update=sampling_mode_enum_set
     )
-    
+
     bpy.app.handlers.frame_change_pre.append(sampling_mode_enum_set)
 
     shading_mode_items = (('VERTEX', 'Vertex Color', ''),
@@ -1472,9 +1478,7 @@ def register():
         default='VERTEX',
         description="Change Shading Mode (Vertex, Textured)",
         update=shading_mode_enum_set,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(shading_mode_enum_set)
 
     bpy.types.Scene.extra_shading_mode = bpy.props.EnumProperty(
         name="extra_shading_mode",
@@ -1482,9 +1486,7 @@ def register():
         default='VERTEX',
         description="Change Extra Shading Mode (Vertex, Textured)",
         update=extra_shading_mode_enum_set,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_shading_mode_enum_set)
 
     bpy.types.Scene.use_extra_glass = bpy.props.BoolProperty(
         name="use_extra_glass",
@@ -1571,7 +1573,8 @@ def register():
         update=detail_height_multiplier_float_set,
         options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(detail_height_multiplier_float_set)
+    bpy.app.handlers.frame_change_pre.append(
+        detail_height_multiplier_float_set)
 
     bpy.types.Scene.extra_glass_width = bpy.props.FloatProperty(
         name="extra_glass_width",
@@ -1685,18 +1688,14 @@ def register():
             "(messes up vertex colors, useful while blocking in shapes)"
         ),
         update=use_frustum_culling_set,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(use_frustum_culling_set)
 
     bpy.types.Scene.culling_camera = bpy.props.PointerProperty(
         name="culling_camera",
         description="Camera to use for frustum culling",
         type=bpy.types.Camera,
         update=culling_camera_set,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(culling_camera_set)
 
     bpy.types.Scene.use_instances_only = bpy.props.BoolProperty(
         name="use_instances_only",
@@ -1766,9 +1765,7 @@ def register():
         type=bpy.types.Material,
         update=base_material_set,
         poll=base_material_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(base_material_set)
 
     bpy.types.Scene.extra_material = bpy.props.PointerProperty(
         name="extra_material",
@@ -1776,9 +1773,7 @@ def register():
         type=bpy.types.Material,
         update=extra_material_set,
         poll=extra_material_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_material_set)
 
     bpy.types.Scene.bevel_size = bpy.props.FloatProperty(
         name="bevel_size",
@@ -1812,7 +1807,6 @@ def register():
         description="Realize instances when rendering",
         update=realize_on_render_set
     )
-    bpy.app.handlers.frame_change_pre.append(realize_on_render_set)
 
     bpy.types.Scene.active_frame_object = bpy.props.PointerProperty(
         name="active_frame_object",
@@ -1820,9 +1814,7 @@ def register():
         type=bpy.types.Object,
         update=active_frame_object_set,
         poll=active_frame_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(active_frame_object_set)
 
     bpy.types.Scene.frame_scale_offset = bpy.props.FloatProperty(
         name="frame_scale_offset",
@@ -1843,9 +1835,7 @@ def register():
         type=bpy.types.Material,
         update=frame_material_set,
         poll=frame_material_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(frame_material_set)
 
     bpy.types.Scene.floor_material = bpy.props.PointerProperty(
         name="floor_material",
@@ -1853,9 +1843,7 @@ def register():
         type=bpy.types.Material,
         update=floor_material_set,
         poll=floor_material_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(floor_material_set)
 
     bpy.types.Scene.extra_glass_material = bpy.props.PointerProperty(
         name="extra_glass_material",
@@ -1863,9 +1851,7 @@ def register():
         type=bpy.types.Material,
         update=extra_glass_material_set,
         poll=extra_glass_material_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_glass_material_set)
 
     bpy.types.Scene.extra_plane_material = bpy.props.PointerProperty(
         name="extra_plane_material",
@@ -1873,9 +1859,7 @@ def register():
         type=bpy.types.Material,
         update=extra_plane_material_set,
         poll=extra_plane_material_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_plane_material_set)
 
     bpy.types.Scene.use_random_rotation = bpy.props.BoolProperty(
         name="use_random_rotation",
@@ -1977,9 +1961,7 @@ def register():
         type=bpy.types.Object,
         update=active_base_object_set,
         poll=active_base_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(active_base_object_set)
 
     bpy.types.Scene.active_extra_object = bpy.props.PointerProperty(
         name="active_extra_object",
@@ -1987,9 +1969,7 @@ def register():
         type=bpy.types.Object,
         update=active_extra_object_set,
         poll=active_extra_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(active_extra_object_set)
 
     bpy.types.Scene.active_boolean_object = bpy.props.PointerProperty(
         name="active_boolean_object",
@@ -1997,9 +1977,7 @@ def register():
         type=bpy.types.Object,
         update=active_boolean_object_set,
         poll=active_boolean_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(active_boolean_object_set)
 
     bpy.types.Scene.extra_glass_color = bpy.props.FloatVectorProperty(
         name="extra_glass_color",
@@ -2020,9 +1998,7 @@ def register():
         type=bpy.types.Object,
         update=base_proxy_object_set,
         poll=proxy_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(base_proxy_object_set)
 
     bpy.types.Scene.extra_proxy_object = bpy.props.PointerProperty(
         name="extra_proxy_object",
@@ -2030,27 +2006,21 @@ def register():
         type=bpy.types.Object,
         update=extra_proxy_object_set,
         poll=proxy_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_proxy_object_set)
 
     bpy.types.Scene.use_base_proxy_object = bpy.props.BoolProperty(
         name="use_base_proxy_object",
         default=False,
         description="Use base proxy object",
         update=use_base_proxy_object_set,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(use_base_proxy_object_set)
 
     bpy.types.Scene.use_extra_proxy_object = bpy.props.BoolProperty(
         name="use_extra_proxy_object",
         default=False,
         description="Use extra proxy object",
         update=use_extra_proxy_object_set,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(use_extra_proxy_object_set)
 
     bpy.types.Scene.use_look_at_rotation = bpy.props.BoolProperty(
         name="use_look_at_rotation",
@@ -2067,9 +2037,7 @@ def register():
         type=bpy.types.Object,
         update=look_at_object_set,
         # poll=look_at_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(look_at_object_set)
 
     bpy.types.Scene.use_extra_look_at_rotation = bpy.props.BoolProperty(
         name="use_extra_look_at_rotation",
@@ -2086,9 +2054,7 @@ def register():
         type=bpy.types.Object,
         update=extra_look_at_object_set,
         # poll=look_at_object_poll,
-        options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_look_at_object_set)
 
     bpy.types.Scene.extra_location_offset_z = bpy.props.FloatProperty(
         name="extra_location_offset_z",
@@ -2176,6 +2142,9 @@ def register():
         options={'ANIMATABLE'}
     )
     bpy.app.handlers.frame_change_pre.append(frame_color_set)
+
+    bpy.app.handlers.render_cancel.append(set_to_initial_frame)
+    bpy.app.handlers.render_complete.append(set_to_initial_frame)
 
 
 def unregister():

@@ -2,6 +2,13 @@
 Changelog
 #####################################
 
+1.0.2
+------
+
+December 07, 2022
+
+* Fix: frame update breaks the link to the selected texture in panel settings
+
 1.0.1
 ------
 
