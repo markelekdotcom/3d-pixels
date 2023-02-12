@@ -8,7 +8,7 @@
 ![GitHub issues](https://img.shields.io/github/issues-raw/markelekdotcom/3d-pixels)
 
 
-# 3D Pixels - Transformative Art Tool #001 
+# 3D Pixels
 is a <a href="https://www.blender.org/" target="_blank">Blender</a> project using <a href="https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/introduction.html" target="_blank">geometry nodes</a> that let's you create <a href="https://www.artstation.com/artwork/r98ExE" target="_blank">3D pixel/pin art</a> - like renders quickly by transforming 2 pictures into a totally new one with options to guide this process.
 
 
