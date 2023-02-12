@@ -223,10 +223,10 @@ class VIEW3D_PT_instance_objects(BASE_PANEL, Panel):
             row = layout.row()
 
             row = box.row()
-            row.prop(scene, 'extra_object_treshold',
-                     text="Height Treshold", slider=True)
+            row.prop(scene, 'extra_object_threshold',
+                     text="Height threshold", slider=True)
             row = box.row()
-            row.label(text="Height Treshold Mode:")
+            row.label(text="Height threshold Mode:")
             row = box.row()
             row.prop(scene, 'threshold_mode', text="")
 
@@ -912,7 +912,7 @@ def detail_size_float_set(self, context):
     plane_settings = plane.modifiers["Settings"]
     plane_settings["Input_2"] = scene.detail_size
     plane.update_tag()
-    plane.modifiers["Settings"].update_tag()
+    # plane.modifiers["Settings"].update_tag()
 
 
 def render_detail_size_float_set(self, context):
@@ -965,11 +965,11 @@ def use_extra_pixelation_set(self, context):
         plane.update_tag()
 
 
-def extra_object_treshold_float_set(self, context):
+def extra_object_threshold_float_set(self, context):
     scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
     plane_settings = plane.modifiers["Settings"]
-    plane_settings["Input_17"] = scene.extra_object_treshold
+    plane_settings["Input_17"] = scene.extra_object_threshold
     if scene.use_extra_object:
         plane.update_tag()
 
@@ -1078,7 +1078,7 @@ def sparse_grid_y_float_set(self, context):
 def boolean_operation_enum_set(self, context):
     scene = bpy.context.scene
     plane = bpy.data.objects["Plane"]
-    plane.modifiers["Boolean"].solver = scene.boolean_operation
+    plane.modifiers["Boolean"].operation = scene.boolean_operation
     plane.update_tag()
 
 
@@ -1406,7 +1406,8 @@ def extra_plane_color_set(self, context):
     scene = bpy.context.scene
     mat = scene.extra_plane_material
     plane_material_node = mat.node_tree.nodes.get("RGB")
-    plane_material_node.outputs[0].default_value = scene.extra_plane_color
+    if plane_material_node is not None:
+        plane_material_node.outputs[0].default_value = scene.extra_plane_color
 
     if scene.use_extra_plane:
         plane = bpy.data.objects["Plane"]
@@ -1417,7 +1418,8 @@ def floor_color_set(self, context):
     scene = bpy.context.scene
     mat = scene.floor_material
     floor_material_node = mat.node_tree.nodes.get("RGB")
-    floor_material_node.outputs[0].default_value = scene.floor_color
+    if floor_material_node is not None:
+        floor_material_node.outputs[0].default_value = scene.floor_color
 
     plane = bpy.data.objects["Plane"]
     plane.update_tag()
@@ -1427,7 +1429,8 @@ def frame_color_set(self, context):
     scene = bpy.context.scene
     mat = scene.frame_material
     frame_material_node = mat.node_tree.nodes.get("RGB")
-    frame_material_node.outputs[0].default_value = scene.frame_color
+    if frame_material_node is not None:
+        frame_material_node.outputs[0].default_value = scene.frame_color
 
     if scene.active_frame_object is not None:
         plane = bpy.data.objects["Plane"]
@@ -1607,16 +1610,16 @@ def register():
     )
     bpy.app.handlers.frame_change_pre.append(use_extra_pixelation_set)
 
-    bpy.types.Scene.extra_object_treshold = bpy.props.FloatProperty(
-        name="extra_object_treshold ",
+    bpy.types.Scene.extra_object_threshold = bpy.props.FloatProperty(
+        name="extra_object_threshold ",
         default=50.0,
         min=-0.0,
         max=100.0,
         description="Height Threshold to control extra object placement",
-        update=extra_object_treshold_float_set,
+        update=extra_object_threshold_float_set,
         options={'ANIMATABLE'}
     )
-    bpy.app.handlers.frame_change_pre.append(extra_object_treshold_float_set)
+    bpy.app.handlers.frame_change_pre.append(extra_object_threshold_float_set)
 
     bpy.types.Scene.use_extra_object = bpy.props.BoolProperty(
         name="use_extra_object",
@@ -2160,7 +2163,7 @@ def unregister():
     del bpy.types.Scene.detail_height_multiplier
     del bpy.types.Scene.extra_glass_width
     del bpy.types.Scene.use_pixelation
-    del bpy.types.Scene.extra_object_treshold
+    del bpy.types.Scene.extra_object_threshold
     del bpy.types.Scene.use_extra_object
     del bpy.types.Scene.gap_size
     del bpy.types.Scene.negative_size_x

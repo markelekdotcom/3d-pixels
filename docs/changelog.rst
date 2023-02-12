@@ -2,6 +2,17 @@
 Changelog
 #####################################
 
+1.0.3
+------
+
+February 12, 2023
+
+* Fix: check if material node doesn't exist
+* Fix: boolean operation enum set function
+* Fix: modifiers have no update tag option, removed
+* Fix: typos
+* Change: set default render resolution to 100% from 300%
+
 1.0.2
 ------
 

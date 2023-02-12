@@ -1,6 +1,7 @@
 ![3DPixels](docs/images/3dpixels_index.png)
 
-[![Blender 3.0](https://img.shields.io/badge/Blender-3.3-blue.svg)](https://www.blender.org/) 
+[![Blender 3.4](https://img.shields.io/badge/Blender-3.4-blue.svg)](https://www.blender.org/) 
+[![Blender 3.3](https://img.shields.io/badge/Blender-3.3-blue.svg)](https://www.blender.org/) 
 ![GitHub](https://img.shields.io/github/license/markelekdotcom/3d-pixels?color=blue)
 [![Documentation Status](https://readthedocs.org/projects/3d-pixels/badge/?version=latest)](https://3dpixels.readthedocs.io/en/latest/?badge=latest)
 ![Maintenance](https://img.shields.io/maintenance/yes/2023)
